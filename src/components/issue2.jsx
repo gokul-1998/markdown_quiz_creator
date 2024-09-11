@@ -3,6 +3,7 @@ import { AlertCircle, Image as ImageIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const IssueCreator = () => {
   const [title, setTitle] = useState('');
@@ -35,7 +36,9 @@ const IssueCreator = () => {
 
         // Get the URL from the response
         const imageUrl = response.data.url;
-        setBody((prevBody) => `${prevBody}\n![Uploaded Image](${imageUrl})`);
+
+        // Add newlines before appending the image Markdown to ensure proper rendering
+        setBody((prevBody) => `${prevBody}\n\n![Uploaded Image](${imageUrl})\n\n`);
         setIsUploading(false);
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -100,9 +103,9 @@ const IssueCreator = () => {
       </Alert>
 
       <div className="mt-6">
-        <h2 className="text-xl font-bold">Preview:</h2>
+        <h2 className="text-xl font-bold mb-2">Preview:</h2>
         <div className="border p-4 rounded bg-gray-100">
-          <ReactMarkdown>{body}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
         </div>
       </div>
     </div>
