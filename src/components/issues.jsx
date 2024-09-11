@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import axios from 'axios';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,22 +7,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bold, Italic, List, ListOrdered, Code, Link, Undo, Redo, Image as ImageIcon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function Component() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [activeTab, setActiveTab] = useState('write');
 
-  const handleImagePaste = (e) => {
+  // to read from .env
+
+
+  // Replace with your Cloudinary info
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dghtwpecg/image/upload";
+  const UPLOAD_PRESET = "ml_default";
+
+  const handleImagePaste = async (e) => {
     const items = e.clipboardData.items;
     for (let i = 0; i < items.length; i++) {
       if (items[i].type.indexOf('image') !== -1) {
         const blob = items[i].getAsFile();
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setDescription((prev) => prev + `\n![Pasted Image](${event.target?.result})`);
-        };
-        reader.readAsDataURL(blob);
+        const formData = new FormData();
+        formData.append('file', blob);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        try {
+          const response = await axios.post(CLOUDINARY_URL, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+
+          const imageUrl = response.data.secure_url;
+          setDescription((prev) => prev + `\n![Pasted Image](${imageUrl})\n`);
+        } catch (error) {
+          console.error('Upload failed:', error);
+        }
       }
     }
   };
@@ -67,7 +86,9 @@ export default function Component() {
         </TabsContent>
         <TabsContent value="preview" className="mt-0">
           <div className="bg-[#0d1117] border border-[#30363d] rounded-md p-4 min-h-[200px]">
-            <ReactMarkdown>{description}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {description}
+            </ReactMarkdown>
           </div>
         </TabsContent>
       </Tabs>
