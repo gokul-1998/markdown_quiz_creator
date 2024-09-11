@@ -105,7 +105,7 @@ const IssueCreator = () => {
       <div className="mt-6">
         <h2 className="text-xl font-bold mb-2">Preview:</h2>
         <div className="border p-4 rounded bg-gray-100">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+          <ReactMarkdown  className="markdown text-left" remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
         </div>
       </div>
     </div>
