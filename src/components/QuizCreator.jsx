@@ -9,9 +9,10 @@ const QuizCreator = () => {
   const [hint, setHint] = useState('');
   const [explanation, setExplanation] = useState('');
   const [questionType, setQuestionType] = useState('fillup');
+  const [cardScore, setCardScore] = useState(2);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  
+
   const textAreaRefs = {
     question: useRef(null),
     answer: useRef(null),
@@ -60,16 +61,25 @@ const QuizCreator = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const quizData = {
-      question,
-      answer,
+      front: question,
+      back: answer,
       hint,
       explanation,
-      questionType,
+      card_score: cardScore,
+      is_fill_up: questionType === 'fillup', // true for fill-up, false for flashcard
+      tags: [], // Assuming tags are not included for now
     };
-    console.log('Submitted Quiz Data:', quizData);
+
+    try {
+      const response = await axios.post('http://localhost:8000/cards/32', quizData);
+      console.log('Submitted Quiz Data:', response.data);
+    } catch (error) {
+      console.error('Error submitting quiz data:', error);
+      setErrorMessage('Failed to submit quiz data.');
+    }
   };
 
   const renderTextarea = (label, value, setValue, ref) => (
@@ -119,6 +129,18 @@ const QuizCreator = () => {
               />
               <label>Flashcard</label>
             </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <label className="font-bold">Card Score (1-5):</label>
+            <input
+              type="number"
+              value={cardScore}
+              min="1"
+              max="5"
+              onChange={(e) => setCardScore(Number(e.target.value))}
+              className="w-16 p-2 border rounded"
+            />
           </div>
 
           {errorMessage && <p className="text-red-600">{errorMessage}</p>}
