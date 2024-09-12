@@ -55,57 +55,59 @@ const IssueCreator = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          value={title}
-          onChange={handleTitleChange}
-          placeholder="Issue title"
-          className="w-full p-2 border rounded"
-        />
-        <div className="relative">
-          <textarea
-            value={body}
-            onChange={handleBodyChange}
-            onPaste={handleImagePaste}
-            placeholder="Leave a comment"
-            className="w-full p-2 border rounded min-h-[200px]"
+    <div className="max-w-7xl mx-auto p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            value={title}
+            onChange={handleTitleChange}
+            placeholder="Issue title"
+            className="w-full p-2 border rounded"
           />
-          {isUploading && (
-            <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
-              <p>Uploading image...</p>
+          <div className="relative">
+            <textarea
+              value={body}
+              onChange={handleBodyChange}
+              onPaste={handleImagePaste}
+              placeholder="Leave a comment"
+              className="w-full p-2 border rounded min-h-[200px]"
+            />
+            {isUploading && (
+              <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
+                <p>Uploading image...</p>
+              </div>
+            )}
+          </div>
+          {errorMessage && (
+            <div className="text-red-600">
+              <p>{errorMessage}</p>
             </div>
           )}
-        </div>
-        {errorMessage && (
-          <div className="text-red-600">
-            <p>{errorMessage}</p>
+          <div className="flex items-center space-x-2">
+            <ImageIcon size={20} />
+            <span className="text-sm text-gray-600">
+              Attach images by dragging & dropping, selecting, or pasting them.
+            </span>
           </div>
-        )}
-        <div className="flex items-center space-x-2">
-          <ImageIcon size={20} />
-          <span className="text-sm text-gray-600">
-            Attach images by dragging & dropping, selecting, or pasting them.
-          </span>
-        </div>
-        <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-          Submit new issue
-        </button>
-      </form>
+          <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+            Submit new issue
+          </button>
 
-      <Alert className="mt-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Note</AlertTitle>
-        <AlertDescription>
-          This is a basic implementation. Markdown parsing and Cloudinary integration is implemented. Check for any errors in image upload.
-        </AlertDescription>
-      </Alert>
+          <Alert className="mt-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Note</AlertTitle>
+            <AlertDescription>
+              This is a basic implementation. Markdown parsing and Cloudinary integration is implemented. Check for any errors in image upload.
+            </AlertDescription>
+          </Alert>
+        </form>
 
-      <div className="mt-6">
-        <h2 className="text-xl font-bold mb-2">Preview:</h2>
-        <div className="border p-4 rounded bg-gray-100">
-          <ReactMarkdown  className="markdown text-left" remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+        <div className="mt-6 md:mt-0">
+          <h2 className="text-xl font-bold mb-2">Preview:</h2>
+          <div className="border p-4 rounded bg-gray-100">
+            <ReactMarkdown className="markdown text-left" remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+          </div>
         </div>
       </div>
     </div>
