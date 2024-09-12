@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { AlertCircle, Image as ImageIcon } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import axios from 'axios';
@@ -10,9 +10,18 @@ const IssueCreator = () => {
   const [body, setBody] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const textAreaRef = useRef(null);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleBodyChange = (e) => setBody(e.target.value);
+
+  // Adjust the textarea height based on the content
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.style.height = 'auto'; // Reset height
+      textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`; // Adjust height based on scrollHeight
+    }
+  }, [body]);
 
   const handleImagePaste = async (e) => {
     const items = e.clipboardData.items;
@@ -67,11 +76,13 @@ const IssueCreator = () => {
           />
           <div className="relative">
             <textarea
+              ref={textAreaRef}
               value={body}
               onChange={handleBodyChange}
               onPaste={handleImagePaste}
               placeholder="Leave a comment"
-              className="w-full p-2 border rounded min-h-[200px]"
+              className="w-full p-2 border rounded resize-none overflow-hidden min-h-[100px]"
+              style={{ minHeight: '100px' }} // Optional initial minHeight
             />
             {isUploading && (
               <div className="absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center">
