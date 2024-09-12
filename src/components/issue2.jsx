@@ -98,20 +98,14 @@ const IssueCreator = () => {
           <div className="flex items-center space-x-2">
             <ImageIcon size={20} />
             <span className="text-sm text-gray-600">
-              Attach images by dragging & dropping, selecting, or pasting them.
+              Attach images by   or pasting them.
             </span>
           </div>
           <button type="submit" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
             Submit new issue
           </button>
 
-          <Alert className="mt-4">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Note</AlertTitle>
-            <AlertDescription>
-              This is a basic implementation. Markdown parsing and Cloudinary integration is implemented. Check for any errors in image upload.
-            </AlertDescription>
-          </Alert>
+          
         </form>
 
         <div className="mt-6 md:mt-0">
